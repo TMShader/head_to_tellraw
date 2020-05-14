@@ -8,6 +8,7 @@ import time
 import requests
 import clipboard
 import json
+import os
 from PIL import Image
 
 # -----------------------------------------------------------
@@ -54,6 +55,7 @@ def generate(image, prefix, message):
 
     clipboard.copy(full)
     message.configure(text="Copied to clipboard!")
+    os.remove("head.png")
 
 # -----------------------------------------------------------------
 
