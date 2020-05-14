@@ -5,4 +5,4 @@ Simply put your name in the application and put the command you got into a comma
 
 ---
 Gallery:
-![TMShader](https://ibb.co/V9QM7sW)
+![TMShader](https://i.ibb.co/SydVhzX/TMShader.png)
