@@ -3,6 +3,8 @@ Make your head visible in the chat on your map!
 
 Simply put your name in the application and put the command you got into a command block and run it!
 
+__Visit the releases tab for .exe file!__
+
 ---
 Gallery:
 
