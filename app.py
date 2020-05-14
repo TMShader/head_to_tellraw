@@ -1,5 +1,5 @@
 # import tkinter as tk
-from tkinter import StringVar, Label, Button, Tk, Entry, PhotoImage, W, Canvas
+from tkinter import StringVar, Label, Button, Tk, Entry, PhotoImage, W, Canvas, font
 import io
 import base64
 from urllib.request import urlopen
@@ -10,6 +10,38 @@ import clipboard
 import json
 import os
 from PIL import Image
+import sys
+
+w = urlopen("https://github.com/TMShader/head_to_tellraw/raw/master/version")
+# v = open(os.path.join(sys._MEIPASS, "version"), "r")
+v = open(os.path.normcase("version"), "r")
+
+web = w.read()
+ver = "b'" + v.read() + "\\n'"
+
+master = Tk()
+
+myFont = font.Font(size=16)
+
+if str(web) != str(ver):
+    image_url = "https://minotar.net/avatar/TMShader/100"
+    image_byt = urlopen(image_url).read()
+    image_b64 = base64.encodebytes(image_byt)
+    photo = PhotoImage(data=image_b64)
+
+    master.resizable(False, False)
+    master.title("Head to 1.16+ Tellraw")
+    master.iconphoto(False, PhotoImage(data=image_b64))
+
+    Label(master, font=myFont, text="Update avaible, please update the tool!").grid(
+        row=0, column=0)
+    Button(master, font=myFont, text='Ok', command=lambda: exit()).grid(
+        row=1, column=1, sticky=W, pady=4)
+
+    master.mainloop()
+
+
+v.close()
 
 # -----------------------------------------------------------
 
@@ -60,7 +92,7 @@ def generate(image, prefix, message):
 # -----------------------------------------------------------------
 
 
-master = Tk()
+# master = Tk()
 
 image_url = "https://minotar.net/avatar/TMShader/100"
 image_byt = urlopen(image_url).read()
@@ -95,14 +127,14 @@ def run(sv, img, cmb, lbl):
             lb.image = photo
             lb.configure(image=photo)
             sv.set(data["name"])
-            lbl.configure(text="User found! Name: " + data["name"])
+            lbl.configure(text="User found!")
             cmb.configure(state="normal")
         else:
             lbl.configure(text="User not found!")
             cmb.configure(state="disabled")
     else:
         cmb.configure(state="disabled")
-        lbl.configure(text="You didn't enter a username!")
+        lbl.configure(text="Username required!")
     # cv = Canvas(bg='white', width=100, height=100)
     # cv.grid(row=0, column=0, sticky=W, pady=4)
     # img = cv.create_image(0, 0, image=photo, anchor='nw')
@@ -112,20 +144,21 @@ def run(sv, img, cmb, lbl):
 sv = StringVar()
 # sv.trace("w", lambda name, index, mode, sv=sv: run(sv, lb))
 
-Label(master, text="Minecraft Username (Case Insensitive)").grid(row=0, column=1)
+Label(master, font=myFont, text=" Minecraft Username: ").grid(
+    row=0, column=1)
 
-succ = Label(master, text="")
+succ = Label(master, font=myFont, text="")
 succ.grid(row=2, column=1)
 
-e1 = Entry(master, textvariable=sv)
+e1 = Entry(master, font=myFont, textvariable=sv)
 
 e1.grid(row=0, column=2)
 
-headBut = Button(master, text='Get Head',
+headBut = Button(master, font=myFont, text='Get Head',
                  command=lambda: run(sv, lb, commBut, succ))
 headBut.grid(row=1, column=2, sticky=W, pady=4)
 
-commBut = Button(master, state="disabled", text='Get Command Block',
+commBut = Button(master, font=myFont, state="disabled", text='Get Command Block',
                  command=lambda: download(sv.get(), succ))
 commBut.grid(row=2, column=2, sticky=W, pady=4)
 
