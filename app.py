@@ -2,7 +2,7 @@
 from tkinter import StringVar, Label, Button, Tk, Entry, PhotoImage, W, Canvas, font
 import io
 import base64
-from urllib.request import urlopen
+from urllib.request import urlopen, urlcleanup
 import numpy
 import time
 import requests
@@ -12,19 +12,20 @@ import os
 from PIL import Image
 import sys
 
-w = urlopen("https://github.com/TMShader/head_to_tellraw/raw/master/version")
+w = requests.get(
+    "https://raw.githubusercontent.com/TMShader/head_to_tellraw/master/version")
 # v = open(os.path.join(sys._MEIPASS, "version"), "r")
 v = open(os.path.normcase("version"), "r")
 
-web = w.read()
-ver = "b'" + v.read() + "\\n'"
+web = w.text[:-1]
+ver = v.read()
 
-master = Tk()
+if str(web) > str(ver):
+    master = Tk()
 
-myFont = font.Font(size=16)
+    myFont = font.Font(size=16)
 
-if str(web) != str(ver):
-    image_url = "https://minotar.net/avatar/TMShader/100"
+    image_url = "https://crafatar.com/avatars/8e437b09425747dba1ef50f5eeef7cfa?size=100&overlay"
     image_byt = urlopen(image_url).read()
     image_b64 = base64.encodebytes(image_byt)
     photo = PhotoImage(data=image_b64)
@@ -35,21 +36,52 @@ if str(web) != str(ver):
 
     Label(master, font=myFont, text="Update avaible, please update the tool!").grid(
         row=0, column=0)
-    Button(master, font=myFont, text='Ok', command=lambda: exit()).grid(
-        row=1, column=1, sticky=W, pady=4)
+    Label(master, font=myFont, text="Your version: v" + ver + "\nCurrent version: v" + web).grid(
+        row=1, column=0)
+    Button(master, font=myFont, text='Ok', command=lambda: sys.exit()).grid(
+        row=2, column=1, sticky=W, pady=4)
+
+    master.mainloop()
+elif str(web) < str(ver):
+    master = Tk()
+
+    myFont = font.Font(size=16)
+
+    image_url = "https://crafatar.com/avatars/8e437b09425747dba1ef50f5eeef7cfa?size=100&overlay"
+    image_byt = urlopen(image_url).read()
+    image_b64 = base64.encodebytes(image_byt)
+    photo = PhotoImage(data=image_b64)
+
+    master.resizable(False, False)
+    master.title("Head to 1.16+ Tellraw")
+    master.iconphoto(False, PhotoImage(data=image_b64))
+
+    Label(master, font=myFont, text="Are you from the future? ;)").grid(
+        row=0, column=0)
+    Label(master, font=myFont, text="Your version: v" + ver + "\nCurrent version: v" + web).grid(
+        row=1, column=0)
+    Button(master, font=myFont, text='Yes ;)', command=lambda: master.destroy()).grid(
+        row=2, column=1, sticky=W, pady=4)
 
     master.mainloop()
 
 
 v.close()
 
+master = Tk()
+
+myFont = font.Font(size=16)
+
 # -----------------------------------------------------------
 
 
 def download(uname, message):
     with open('head.png', 'wb') as handle:
+        uuid_raw = json.loads(requests.get(
+            "https://api.mojang.com/users/profiles/minecraft/" + uname).text)
+        uuid = uuid_raw["id"]
         response = requests.get(
-            "https://minotar.net/avatar/" + uname + "/80", stream=True)
+            "https://crafatar.com/avatars/" + uuid + "?size=80&overlay")
 
         if not response.ok:
             print(response)
@@ -94,7 +126,7 @@ def generate(image, prefix, message):
 
 # master = Tk()
 
-image_url = "https://minotar.net/avatar/TMShader/100"
+image_url = "https://crafatar.com/avatars/8e437b09425747dba1ef50f5eeef7cfa?size=100&overlay"
 image_byt = urlopen(image_url).read()
 image_b64 = base64.encodebytes(image_byt)
 photo = PhotoImage(data=image_b64)
@@ -118,7 +150,8 @@ def run(sv, img, cmb, lbl):
     if sv.get() != "":
         if result.text:
             data = json.loads(result.text)
-            image_url = "https://minotar.net/avatar/" + sv.get() + "/100"
+            uuid = data["id"]
+            image_url = "https://crafatar.com/avatars/" + uuid + "?size=100&overlay"
             image_byt = urlopen(image_url).read()
             image_b64 = base64.encodebytes(image_byt)
             photo = PhotoImage(data=image_b64)
