@@ -14,8 +14,8 @@ import sys
 
 w = requests.get(
     "https://raw.githubusercontent.com/TMShader/head_to_tellraw/master/version")
-# v = open(os.path.join(sys._MEIPASS, "version"), "r")
-v = open(os.path.normcase("version"), "r")
+v = open(os.path.join(sys._MEIPASS, "version"), "r")
+# v = open(os.path.normcase("version"), "r")
 
 web = w.text[:-1]
 ver = v.read()
